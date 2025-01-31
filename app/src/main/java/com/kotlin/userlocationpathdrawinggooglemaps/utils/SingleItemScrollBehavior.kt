@@ -15,7 +15,7 @@ class SingleItemScrollBehavior(context: Context) : LinearLayoutManager(context, 
             }
 
             override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
-                return 100f / displayMetrics.densityDpi // Adjust this value to control scroll speed
+                return 100f / displayMetrics.densityDpi
             }
         }
         smoothScroller.targetPosition = position

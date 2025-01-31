@@ -14,16 +14,14 @@ import com.kotlin.userlocationpathdrawinggooglemaps.model.DataSet
 class ListFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: ListAdapter // Replace with your actual adapter class
+    private lateinit var adapter: ListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val binding: FragmentListBinding = FragmentListBinding.inflate(inflater, container, false)
 
-        // Set up the RecyclerView
         recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
         val data= mutableListOf<DataSet>()
@@ -42,11 +40,8 @@ class ListFragment : Fragment() {
             R.drawable.charging1
         ))
 
-
-        adapter = ListAdapter(data) // Set up your adapter
+        adapter = ListAdapter(data)
         recyclerView.adapter = adapter
-
-
 
         return binding.root
     }
