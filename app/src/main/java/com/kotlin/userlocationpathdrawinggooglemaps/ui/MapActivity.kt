@@ -175,7 +175,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
                     startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                 }
             } else {
-                Toast.makeText(this, "Location permission not granted!", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this, "Location permission not granted!", Toast.LENGTH_SHORT).show()
                 checkAndRequestLocationPermission() // Request permissions again if not granted
             }
         }
@@ -286,6 +286,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
         ) {
             mMap.isMyLocationEnabled = true
         }
+        mMap.uiSettings.isZoomControlsEnabled = false
+
 
         observeLocation() // Observe location updates and update the map
         val routeCoordinates = getRouteCoordinates()
@@ -376,7 +378,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
     private fun updateMapWithLocation(location: Location) {
         val userLatLng = LatLng(location.latitude, location.longitude)
         val customMarker = BitmapDescriptorFactory.fromBitmap(createCustomMarker())
-        mMap.addMarker(MarkerOptions().position(userLatLng).title("You are here").icon(customMarker))
+        mMap.addMarker(MarkerOptions().position(userLatLng).title("You are here").icon(customMarker))?.showInfoWindow()
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 9f))
     }
 
@@ -461,5 +463,4 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
 
         return routeList
     }
-
 }
