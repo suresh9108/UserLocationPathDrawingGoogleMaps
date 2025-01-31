@@ -31,6 +31,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.kotlin.userlocationpathdrawinggooglemaps.viewmodel.MapsViewModel
@@ -52,6 +53,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
     private lateinit var mMap: GoogleMap
     private var isMapVisible: Boolean = true
     private lateinit var snapHelper: LinearSnapHelper
+    private var currentLocationMarker: Marker? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -377,10 +380,24 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
 
     private fun updateMapWithLocation(location: Location) {
         val userLatLng = LatLng(location.latitude, location.longitude)
-        val customMarker = BitmapDescriptorFactory.fromBitmap(createCustomMarker())
-        mMap.addMarker(MarkerOptions().position(userLatLng).title("You are here").icon(customMarker))?.showInfoWindow()
+
+        // Remove the previous marker, if any
+        currentLocationMarker?.remove()
+
+        // Add the new marker
+        currentLocationMarker = mMap.addMarker(
+            MarkerOptions()
+                .position(userLatLng)
+                .title("You are here")
+                .icon(BitmapDescriptorFactory.fromBitmap(createCustomMarker()))
+        )
+
+        currentLocationMarker?.showInfoWindow()
+
+        // Animate the camera to the user's location
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 9f))
     }
+
 
     private fun createCustomMarker(): Bitmap {
         val drawable = getDrawable(R.drawable.gps_navigation1) ?: return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)

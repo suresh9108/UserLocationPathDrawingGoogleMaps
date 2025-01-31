@@ -19,7 +19,7 @@ class HorizantalListAdapter(private val dataList: List<LatLng>) : RecyclerView.A
 
         val displayMetrics = parent.context.resources.displayMetrics
         val screenWidth = displayMetrics.widthPixels
-        val itemWidth = (screenWidth * 0.9).toInt()
+        val itemWidth = (screenWidth * 0.85).toInt()
 
         view.layoutParams.width = itemWidth
 

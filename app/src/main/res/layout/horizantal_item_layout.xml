@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="12dp"
-    android:layout_marginHorizontal="10dp"
+    android:layout_marginHorizontal="6dp"
     app:cardElevation="6dp"
 android:background="@color/white"
     android:layout_marginVertical="4dp">
@@ -335,7 +335,7 @@ android:background="@color/white"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
                     android:text="CONTACT"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:layout_marginEnd="20dp"
                     android:textColor="@color/blue" />
             </LinearLayout>
@@ -364,7 +364,7 @@ android:background="@color/white"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
                     android:text="NAVIGATE"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:layout_marginEnd="20dp"
                     android:textColor="@color/white" />
             </LinearLayout>
