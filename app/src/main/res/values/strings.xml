@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">UserLocationPathDrawingGoogleMaps</string>
+    <string name="google_maps_api_key">AIzaSyCziqe1Q-d4HMC3D9ZyYDFkBtx8ZHrzGzM</string>
+    <string name="find_charging_hub">Find charging hub</string>
+    <string name="fast">Fast</string>
 </resources>

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="6dp"
+    android:layout_marginVertical="4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Logo -->
+        <ImageView
+            android:id="@+id/logoImage"
+            android:layout_width="100dp"
+            android:layout_height="150dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@drawable/ic_launcher_background"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true" />
+        <!-- Availability -->
+        <TextView
+            android:id="@+id/availabilityText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/green_border"
+            android:text="Available"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/logoImage"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          app:layout_constraintStart_toEndOf="@id/logoImage"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+          <!-- Charging Plug Name -->
+          <TextView
+              android:id="@+id/plugName"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="8dp"
+              app:layout_constraintTop_toTopOf="parent"
+              app:layout_constraintStart_toStartOf="parent"
+              android:text="GBT EV Charging Plug"
+              android:textStyle="bold"
+              android:textSize="16sp"
+              android:textColor="@android:color/black" />
+
+          <!-- Location -->
+          <TextView
+              android:id="@+id/locationText"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              app:layout_constraintTop_toBottomOf="@id/plugName"
+              app:layout_constraintStart_toStartOf="parent"
+              android:layout_below="@id/plugName"
+              android:layout_marginStart="8dp"
+              android:layout_marginTop="12dp"
+              android:text="JP Nagar, Bengaluru"
+              android:textSize="14sp"
+              android:textColor="@android:color/darker_gray" />
+
+
+          <!-- Fast Icon -->
+
+          <LinearLayout
+              android:id="@+id/fastChargingContainer"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintTop_toTopOf="parent"
+              android:background="@drawable/orabge_border"
+              android:layout_marginStart="8dp"
+              android:orientation="horizontal">
+
+              <ImageView
+                  android:layout_width="16dp"
+                  android:layout_height="16dp"
+                  android:layout_marginStart="6dp"
+                  android:layout_gravity="center_vertical
+"
+                  android:src="@drawable/icon_fastcharge" />
+
+              <TextView
+                  android:id="@+id/fastText"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginStart="6dp"
+                  android:text="@string/fast"
+                  android:textSize="14sp"
+                  android:textColor="@android:color/white" />
+          </LinearLayout>
+
+          <!-- Rating -->
+          <LinearLayout
+              android:id="@+id/ratingContainer"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_below="@id/locationText"
+              android:layout_marginTop="20dp"
+              android:background="@drawable/yellow_background"
+              app:layout_constraintTop_toBottomOf="@id/locationText"
+             app:layout_constraintStart_toStartOf="parent"
+              android:layout_marginStart="8dp"
+              android:paddingHorizontal="5dp"
+              android:orientation="horizontal">
+
+              <ImageView
+                  android:layout_width="16dp"
+                  android:layout_height="16dp"
+                  android:layout_gravity="center_vertical"
+                  android:src="@drawable/icon_star" />
+
+              <TextView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginStart="4dp"
+                  android:text="4.0"
+                  android:textSize="14sp"
+                  android:textColor="@android:color/black" />
+          </LinearLayout>
+
+          <!-- Time -->
+          <LinearLayout
+              android:id="@+id/timeContainer"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_below="@id/locationText"
+              android:background="@drawable/gray_border"
+              app:layout_constraintStart_toEndOf="@id/ratingContainer"
+              app:layout_constraintTop_toBottomOf="@id/locationText"
+              android:layout_marginStart="8dp"
+              android:paddingHorizontal="5dp"
+              android:layout_marginTop="20dp"
+              android:orientation="horizontal">
+
+              <ImageView
+                  android:layout_width="16dp"
+                  android:layout_height="16dp"
+                  android:layout_gravity="center_vertical"
+                  android:src="@drawable/icon_time" />
+
+              <TextView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginStart="4dp"
+                  android:text="9am - 9pm"
+                  android:textSize="14sp"
+                  android:textColor="@android:color/black" />
+          </LinearLayout>
+
+          <!-- Contact Button -->
+          <androidx.appcompat.widget.AppCompatButton
+              android:id="@+id/contactButton"
+              android:layout_width="120dp"
+              android:layout_height="wrap_content"
+              android:layout_below="@id/ratingContainer"
+              android:layout_alignParentStart="true"
+              android:layout_marginTop="12dp"
+              android:text="Contact"
+              android:background="@drawable/button_border"
+              android:textColor="#1C4792"
+              app:layout_constraintTop_toBottomOf="@id/ratingContainer"
+          app:layout_constraintStart_toStartOf="parent"/>
+
+          <!-- Navigate Button -->
+          <androidx.appcompat.widget.AppCompatButton
+              android:id="@+id/navigateButton"
+              android:layout_width="120dp"
+              android:layout_height="wrap_content"
+              android:layout_below="@id/ratingContainer"
+              android:layout_toEndOf="@id/contactButton"
+              android:layout_marginStart="16dp"
+              app:layout_constraintTop_toBottomOf="@id/ratingContainer"
+              app:layout_constraintStart_toEndOf="@id/contactButton"
+              android:layout_marginTop="12dp"
+              android:text="Navigate"
+              android:textColor="@color/white"
+              android:background="@drawable/blue_button_border" />
+      </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
+
