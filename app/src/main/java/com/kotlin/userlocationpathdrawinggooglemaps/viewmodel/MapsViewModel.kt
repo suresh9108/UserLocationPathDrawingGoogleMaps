@@ -1,4 +1,4 @@
-package com.kotlin.userlocationpathdrawinggooglemaps
+package com.kotlin.userlocationpathdrawinggooglemaps.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

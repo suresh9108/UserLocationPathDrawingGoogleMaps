@@ -1,4 +1,4 @@
-package com.kotlin.userlocationpathdrawinggooglemaps
+package com.kotlin.userlocationpathdrawinggooglemaps.ui
 
 import android.Manifest
 import android.content.Context
@@ -28,25 +28,29 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.kotlin.userlocationpathdrawinggooglemaps.viewmodel.MapsViewModel
+import com.kotlin.userlocationpathdrawinggooglemaps.utils.OnSnapPositionChangeListener
+import com.kotlin.userlocationpathdrawinggooglemaps.R
+import com.kotlin.userlocationpathdrawinggooglemaps.utils.SingleItemScrollBehavior
+import com.kotlin.userlocationpathdrawinggooglemaps.utils.SnapOnScrollListener
 import com.kotlin.userlocationpathdrawinggooglemaps.databinding.ActivityMapBinding
 import org.json.JSONObject
 import kotlin.math.max
 import kotlin.math.min
 
 
-class MapActivity : AppCompatActivity() ,OnMapReadyCallback,OnSnapPositionChangeListener{
+class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChangeListener {
 
     private lateinit var binding: ActivityMapBinding
     private val mapsViewModel: MapsViewModel by viewModels()
     private lateinit var mMap: GoogleMap
     private var isMapVisible: Boolean = true
     private lateinit var snapHelper: LinearSnapHelper
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,10 +61,12 @@ class MapActivity : AppCompatActivity() ,OnMapReadyCallback,OnSnapPositionChange
         val mapFragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-
         checkAndRequestLocationPermission()
         observeLocation()
         onclicks()
+
+        // Initially hide the recyclerView
+        binding.recyclerView.visibility = View.GONE
 
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.recyclerView.layoutManager = SingleItemScrollBehavior(this)
@@ -113,24 +119,26 @@ class MapActivity : AppCompatActivity() ,OnMapReadyCallback,OnSnapPositionChange
         // Initialize Google Map
         mapFragment.getMapAsync { map ->
             mMap = map
-            updateMapMarker(0) // Set initial marker
+           // updateMapMarker(0) // Set initial marker
             mMap.setOnMarkerClickListener { marker ->
-                // Get the index from the marker's tag
-                val index = marker.title
-                Log.e("TAG", "onCreate: ${marker.title}", )
+                // Get the index from the marker's title
+                val index = marker.title?.toIntOrNull()
+                Log.e("TAG", "onCreate: $index", )
                 index?.let {
-                    // Scroll to the corresponding position in the RecyclerView
-                    (binding.recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(it.toInt(), 0)
-                    binding.recyclerView.smoothScrollToPosition(it.toInt())
+                    // Toggle the RecyclerView visibility
+                    if (binding.recyclerView.visibility == View.GONE ) {
+                        // Show the list and scroll to the selected position
+                        binding.recyclerView.visibility = View.VISIBLE
+                        binding.recyclerView.smoothScrollToPosition(it)
+                    } else {
+                        // Hide the list
+                        binding.recyclerView.visibility = View.GONE
+                    }
                     return@setOnMarkerClickListener true
                 }
                 false
             }
-
         }
-
-
-
     }
 
     override fun onSnapPositionChange(position: Int) {
@@ -140,20 +148,19 @@ class MapActivity : AppCompatActivity() ,OnMapReadyCallback,OnSnapPositionChange
     private fun updateMapMarker(position: Int) {
         val location = getRouteCoordinates()[position]
         if (::mMap.isInitialized) {
-          //  mMap.clear()
-            mMap.addMarker(MarkerOptions().position(location).title("${position + 1}"))
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 12f))
+         //   mMap.addMarker(MarkerOptions().position(location).title("${position + 1}"))
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15f))
         }
     }
-
 
     private fun onclicks() {
         binding.toggleSwitch.setOnClickListener {
             if (isMapVisible) {
                 // Hide the map and show the list fragment
-
                 findViewById<FragmentContainerView>(R.id.mapFragment).visibility = View.GONE
                 findViewById<FrameLayout>(R.id.listFragmentContainer).visibility = View.VISIBLE
+                binding.toggleSwitch.setImageResource(R.drawable.icon_map)
+
 
                 // Show the list fragment
                 supportFragmentManager.beginTransaction()
@@ -165,10 +172,10 @@ class MapActivity : AppCompatActivity() ,OnMapReadyCallback,OnSnapPositionChange
                 // Show the map and hide the list fragment
                 findViewById<FragmentContainerView>(R.id.mapFragment).visibility = View.VISIBLE
                 findViewById<FrameLayout>(R.id.listFragmentContainer).visibility = View.GONE
+                binding.toggleSwitch.setImageResource(R.drawable.icon_charging_hubs)
 
                 isMapVisible = true
             }
-
         }
     }
 
@@ -180,13 +187,9 @@ class MapActivity : AppCompatActivity() ,OnMapReadyCallback,OnSnapPositionChange
         val coarseLocationGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
 
         if (fineLocationGranted || coarseLocationGranted) {
-            //statusTextView.text = "Location Permission Granted"
             Toast.makeText(this, "Location Permission Granted", Toast.LENGTH_SHORT).show()
-
             checkLocationServices()
         } else {
-            //statusTextView.text = "Permission Denied"
-            Log.e("TAG", ": Location Permission Granted")
             Toast.makeText(this, "Location permission is required!", Toast.LENGTH_SHORT).show()
         }
     }
@@ -196,7 +199,6 @@ class MapActivity : AppCompatActivity() ,OnMapReadyCallback,OnSnapPositionChange
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
             ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-          //  statusTextView.text = "Location Permission Already Granted"
             mapsViewModel.fetchUserLocation()
             checkLocationServices()
         } else {
@@ -239,18 +241,124 @@ class MapActivity : AppCompatActivity() ,OnMapReadyCallback,OnSnapPositionChange
 
         if (routeCoordinates.isNotEmpty()) {
             drawPathOnMap(routeCoordinates)
+            addMarkers()
         } else {
             Log.e("TAG", "No route data found!")
         }
     }
 
 
+
+    private fun addMarkers() {
+        val routeJson = """
+        {
+    "route": [
+        {
+            "latitude": 12.9716,
+            "longitude": 77.5946,
+            "icon": "start_marker"
+        },
+        {
+            "latitude": 12.9062,
+            "longitude": 77.4846,
+            "icon": "waypoint_marker1"
+        },
+        {
+            "latitude": 12.7159,
+            "longitude": 77.2810,
+            "icon": "waypoint_marker2"
+        },
+        {
+            "latitude": 12.6516,
+            "longitude": 77.2067,
+            "icon": "waypoint_marker3"
+        },
+        {
+            "latitude": 12.5823,
+            "longitude": 77.0429,
+            "icon": "waypoint_marker4"
+        },
+        {
+            "latitude": 12.5222,
+            "longitude": 76.8971,
+            "icon": "waypoint_marker5"
+        },
+        {
+            "latitude": 12.4136,
+            "longitude": 76.7041,
+            "icon": "waypoint_marker6"
+        },
+        {
+            "latitude": 12.2958,
+            "longitude": 76.6394,
+            "icon": "end_marker"
+        }
+    ]
+}
+    """.trimIndent()
+        val jsonObject = JSONObject(routeJson)
+        val routeArray = jsonObject.getJSONArray("route")
+
+        for (i in 0 until routeArray.length()) {
+            val point = routeArray.getJSONObject(i)
+            val lat = point.getDouble("latitude")
+            val lng = point.getDouble("longitude")
+            val iconName = point.getString("icon")
+
+            val iconResId = when (iconName) {
+                "start_marker" -> R.drawable.marker_bolt
+                "end_marker" -> R.drawable.marker_statiq
+                "waypoint_marker1" -> R.drawable.marker_kazam
+                "waypoint_marker2" -> R.drawable.marker_statiq
+                "waypoint_marker3" -> R.drawable.marker_jio_bp
+                "waypoint_marker4" -> R.drawable.marker_bolt
+                "waypoint_marker5" -> R.drawable.marker_statiq
+                else -> R.drawable.car_navigation
+            }
+
+            val markerIcon = createCustomMarker( iconResId)
+
+
+            mMap.addMarker(
+                MarkerOptions()
+                    .position(LatLng(lat, lng))
+                    .title("$i")
+                    .icon(BitmapDescriptorFactory.fromBitmap(markerIcon)))
+
+        }
+    }
+
+    private fun createCustomMarker(iconResId:Int): Bitmap {
+        val drawable = getDrawable(iconResId) ?: return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+        val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+        return bitmap
+    }
+
+
+    private fun createCustomMarker(context: Context, drawableId: Int): BitmapDescriptor {
+        val drawable = context.getDrawable(drawableId) ?: return BitmapDescriptorFactory.defaultMarker()
+
+        val bitmap = Bitmap.createBitmap(
+            drawable.intrinsicWidth,
+            drawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+
+
+
     private fun updateMapWithLocation(location: Location) {
-        Log.e("TAG", "updateMapWithLocation: $location")
         val userLatLng = LatLng(location.latitude, location.longitude)
         val customMarker = BitmapDescriptorFactory.fromBitmap(createCustomMarker())
-
-        //mMap.clear()
         mMap.addMarker(MarkerOptions().position(userLatLng).title("You are here").icon(customMarker))
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 7f))
     }
@@ -264,42 +372,69 @@ class MapActivity : AppCompatActivity() ,OnMapReadyCallback,OnSnapPositionChange
         return bitmap
     }
 
-
     private fun drawPathOnMap(route: List<LatLng>) {
-        if (::mMap.isInitialized) {
-            val polylineOptions = PolylineOptions()
-                .addAll(route)
-                .color(Color.BLUE)
-                .width(10f)
-                .geodesic(true)
+        val polylineOptions = PolylineOptions()
+            .addAll(route)
+            .color(Color.BLUE)
+            .width(10f)
+            .geodesic(true)
 
-            Log.e("TAG", "drawPathOnMap: ${route.first()}")
+        mMap.addPolyline(polylineOptions)
 
-            mMap.addPolyline(polylineOptions)
+        // Add start and end markers
+       // mMap.addMarker(MarkerOptions().position(route.first()).title("1"))
+       // mMap.addMarker(MarkerOptions().position(route.last()).title("${route.size}"))
 
-            // Add start and end markers
-            mMap.addMarker(MarkerOptions().position(route.first()).title("Start Point"))
-            mMap.addMarker(MarkerOptions().position(route.last()).title("End Point"))
 
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(route.first(), 10f))
-        }
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(route.first(), 10f))
     }
-
 
     private fun getRouteCoordinates(): List<LatLng> {
         val routeJson = """
         {
-            "route": [
-                {"latitude":12.9716, "longitude":77.5946},
-                {"latitude":12.9062, "longitude":77.4846},
-                {"latitude":12.7159, "longitude":77.2810},
-                {"latitude":12.6516, "longitude":77.2067},
-                {"latitude":12.5823, "longitude":77.0429},
-                {"latitude":12.5222, "longitude":76.8971},
-                {"latitude":12.4136, "longitude":76.7041},
-                {"latitude":12.2958, "longitude":76.6394}
-            ]
+    "route": [
+        {
+            "latitude": 12.9716,
+            "longitude": 77.5946,
+            "icon": "start_marker"
+        },
+        {
+            "latitude": 12.9062,
+            "longitude": 77.4846,
+            "icon": "waypoint_marker1"
+        },
+        {
+            "latitude": 12.7159,
+            "longitude": 77.2810,
+            "icon": "waypoint_marker2"
+        },
+        {
+            "latitude": 12.6516,
+            "longitude": 77.2067,
+            "icon": "waypoint_marker3"
+        },
+        {
+            "latitude": 12.5823,
+            "longitude": 77.0429,
+            "icon": "waypoint_marker4"
+        },
+        {
+            "latitude": 12.5222,
+            "longitude": 76.8971,
+            "icon": "waypoint_marker5"
+        },
+        {
+            "latitude": 12.4136,
+            "longitude": 76.7041,
+            "icon": "waypoint_marker6"
+        },
+        {
+            "latitude": 12.2958,
+            "longitude": 76.6394,
+            "icon": "end_marker"
         }
+    ]
+}
     """.trimIndent()
 
         val jsonObject = JSONObject(routeJson)
@@ -315,6 +450,4 @@ class MapActivity : AppCompatActivity() ,OnMapReadyCallback,OnSnapPositionChange
 
         return routeList
     }
-
-
 }

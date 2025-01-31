@@ -1,4 +1,4 @@
-package com.kotlin.userlocationpathdrawinggooglemaps
+package com.kotlin.userlocationpathdrawinggooglemaps.utils
 
 import android.content.Context
 import android.util.DisplayMetrics

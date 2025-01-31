@@ -1,4 +1,4 @@
-package com.kotlin.userlocationpathdrawinggooglemaps
+package com.kotlin.userlocationpathdrawinggooglemaps.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.kotlin.userlocationpathdrawinggooglemaps.R
 import com.kotlin.userlocationpathdrawinggooglemaps.databinding.FragmentListBinding
+import com.kotlin.userlocationpathdrawinggooglemaps.model.DataSet
 
 class ListFragment : Fragment() {
 
@@ -24,13 +26,27 @@ class ListFragment : Fragment() {
         // Set up the RecyclerView
         recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
-        val dataList = listOf("Item 1", "Item 2", "Item 3", "Item 4","item 5", "item 6")
+        val data= mutableListOf<DataSet>()
+        data.add(DataSet("MAHINDRA CHARGER","Jayanagar, bangaluru", R.drawable.charging1))
+        data.add(DataSet("GBT EV Charging Plug","JP Nagar, Bengaluru", R.drawable.charging1))
+        data.add(DataSet("Okaya Charging Station","C Block, Sector 2, Shivajinagar",
+            R.drawable.charging1
+        ))
+        data.add(DataSet("Charzer Charging Station","Jayanagara 9th Block, Bengaluru",
+            R.drawable.charging1
+        ))
+        data.add(DataSet("Okaya Charging Station","C Block, Sector 2, Shivajinagar",
+            R.drawable.charging1
+        ))
+        data.add(DataSet("Charzer Charging Station","Jayanagara 9th Block, Bengaluru",
+            R.drawable.charging1
+        ))
 
-        adapter = ListAdapter(dataList) // Set up your adapter
+
+        adapter = ListAdapter(data) // Set up your adapter
         recyclerView.adapter = adapter
 
-        // Optionally, set your data here
-        // adapter.submitList(yourDataList)
+
 
         return binding.root
     }

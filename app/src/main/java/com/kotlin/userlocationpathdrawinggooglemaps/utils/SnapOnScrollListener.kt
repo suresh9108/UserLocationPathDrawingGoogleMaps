@@ -1,8 +1,7 @@
-package com.kotlin.userlocationpathdrawinggooglemaps
+package com.kotlin.userlocationpathdrawinggooglemaps.utils
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
-import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 
 class SnapOnScrollListener(

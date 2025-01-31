@@ -27,7 +27,7 @@
                 android:layout_height="80dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:background="@drawable/ic_launcher_background"
+                android:background="@drawable/charging1"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true" />
             <!-- Availability -->
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/green_border"
                 android:text="Available"
                 android:paddingHorizontal="10dp"
@@ -111,6 +111,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
                         android:text="@string/fast"
+                        android:paddingEnd="8dp"
                         android:textSize="14sp"
                         android:textColor="@android:color/white" />
                 </LinearLayout>
