@@ -21,6 +21,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -31,13 +34,18 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.kotlin.userlocationpathdrawinggooglemaps.databinding.ActivityMapBinding
 import org.json.JSONObject
+import kotlin.math.max
+import kotlin.math.min
 
-class MapActivity : AppCompatActivity() ,OnMapReadyCallback{
+
+class MapActivity : AppCompatActivity() ,OnMapReadyCallback,OnSnapPositionChangeListener{
 
     private lateinit var binding: ActivityMapBinding
     private val mapsViewModel: MapsViewModel by viewModels()
     private lateinit var mMap: GoogleMap
     private var isMapVisible: Boolean = true
+    private lateinit var snapHelper: LinearSnapHelper
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,8 +62,90 @@ class MapActivity : AppCompatActivity() ,OnMapReadyCallback{
         observeLocation()
         onclicks()
 
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding.recyclerView.layoutManager = SingleItemScrollBehavior(this)
+        binding.recyclerView.adapter = HorizantalListAdapter(getRouteCoordinates())
+
+        // Attach SnapHelper
+        snapHelper = LinearSnapHelper()
+
+
+        snapHelper = object : LinearSnapHelper() {
+            override fun findTargetSnapPosition(
+                layoutManager: RecyclerView.LayoutManager,
+                velocityX: Int,
+                velocityY: Int
+            ): Int {
+                val centerView = findSnapView(layoutManager) ?: return RecyclerView.NO_POSITION
+
+                val position = layoutManager.getPosition(centerView)
+                var targetPosition = -1
+                if (layoutManager.canScrollHorizontally()) {
+                    targetPosition = if (velocityX < 0) {
+                        position - 1
+                    } else {
+                        position + 1
+                    }
+                }
+
+                if (layoutManager.canScrollVertically()) {
+                    targetPosition = if (velocityY < 0) {
+                        position - 1
+                    } else {
+                        position + 1
+                    }
+                }
+
+                val firstItem = 0
+                val lastItem = layoutManager.itemCount - 1
+                targetPosition =
+                    min(lastItem.toDouble(), max(targetPosition.toDouble(), firstItem.toDouble()))
+                        .toInt()
+                return targetPosition
+            }
+        }
+
+        snapHelper.attachToRecyclerView(binding.recyclerView)
+
+        // Attach scroll listener
+        binding.recyclerView.addOnScrollListener(SnapOnScrollListener(snapHelper, this))
+
+        // Initialize Google Map
+        mapFragment.getMapAsync { map ->
+            mMap = map
+            updateMapMarker(0) // Set initial marker
+            mMap.setOnMarkerClickListener { marker ->
+                // Get the index from the marker's tag
+                val index = marker.title
+                Log.e("TAG", "onCreate: ${marker.title}", )
+                index?.let {
+                    // Scroll to the corresponding position in the RecyclerView
+                    (binding.recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(it.toInt(), 0)
+                    binding.recyclerView.smoothScrollToPosition(it.toInt())
+                    return@setOnMarkerClickListener true
+                }
+                false
+            }
+
+        }
+
+
 
     }
+
+    override fun onSnapPositionChange(position: Int) {
+        updateMapMarker(position)
+    }
+
+    private fun updateMapMarker(position: Int) {
+        val location = getRouteCoordinates()[position]
+        if (::mMap.isInitialized) {
+          //  mMap.clear()
+            mMap.addMarker(MarkerOptions().position(location).title("${position + 1}"))
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 12f))
+        }
+    }
+
 
     private fun onclicks() {
         binding.toggleSwitch.setOnClickListener {
@@ -96,7 +186,7 @@ class MapActivity : AppCompatActivity() ,OnMapReadyCallback{
             checkLocationServices()
         } else {
             //statusTextView.text = "Permission Denied"
-            Log.e("TAG", ": Location Permission Granted", )
+            Log.e("TAG", ": Location Permission Granted")
             Toast.makeText(this, "Location permission is required!", Toast.LENGTH_SHORT).show()
         }
     }
@@ -156,7 +246,7 @@ class MapActivity : AppCompatActivity() ,OnMapReadyCallback{
 
 
     private fun updateMapWithLocation(location: Location) {
-        Log.e("TAG", "updateMapWithLocation: $location", )
+        Log.e("TAG", "updateMapWithLocation: $location")
         val userLatLng = LatLng(location.latitude, location.longitude)
         val customMarker = BitmapDescriptorFactory.fromBitmap(createCustomMarker())
 
@@ -183,7 +273,7 @@ class MapActivity : AppCompatActivity() ,OnMapReadyCallback{
                 .width(10f)
                 .geodesic(true)
 
-            Log.e("TAG", "drawPathOnMap: ${route.first()}", )
+            Log.e("TAG", "drawPathOnMap: ${route.first()}")
 
             mMap.addPolyline(polylineOptions)
 
@@ -225,4 +315,6 @@ class MapActivity : AppCompatActivity() ,OnMapReadyCallback{
 
         return routeList
     }
+
+
 }

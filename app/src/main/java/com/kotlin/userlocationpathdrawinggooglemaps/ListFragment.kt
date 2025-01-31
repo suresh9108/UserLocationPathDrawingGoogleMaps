@@ -24,7 +24,7 @@ class ListFragment : Fragment() {
         // Set up the RecyclerView
         recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
-        val dataList = listOf("Item 1", "Item 2", "Item 3", "Item 4")
+        val dataList = listOf("Item 1", "Item 2", "Item 3", "Item 4","item 5", "item 6")
 
         adapter = ListAdapter(dataList) // Set up your adapter
         recyclerView.adapter = adapter

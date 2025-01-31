@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="12dp"
+    android:layout_marginHorizontal="10dp"
+    app:cardElevation="6dp"
+
+    android:layout_marginVertical="4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/top_details_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp">
+            <!-- Logo -->
+            <ImageView
+                android:id="@+id/logoImage"
+                android:layout_width="70dp"
+                android:layout_height="80dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:background="@drawable/ic_launcher_background"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true" />
+            <!-- Availability -->
+            <TextView
+                android:id="@+id/availabilityText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/green_border"
+                android:text="Available"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/logoImage"
+                app:layout_constraintStart_toStartOf="parent" />
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/logoImage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <!-- Charging Plug Name -->
+                <TextView
+                    android:id="@+id/plugName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:text="GBT EV Charging Plug"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/black" />
+
+                <!-- Location -->
+                <TextView
+                    android:id="@+id/locationText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/plugName"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_below="@id/plugName"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="JP Nagar, Bengaluru"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/darker_gray" />
+
+
+                <!-- Fast Icon -->
+
+                <LinearLayout
+                    android:id="@+id/fastChargingContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:background="@drawable/orabge_border"
+                    android:layout_marginStart="8dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_gravity="center_vertical
+"
+                        android:src="@drawable/icon_fastcharge" />
+
+                    <TextView
+                        android:id="@+id/fastText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="@string/fast"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/white" />
+                </LinearLayout>
+
+                <!-- Rating -->
+                <LinearLayout
+                    android:id="@+id/ratingContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/locationText"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/yellow_background"
+                    app:layout_constraintTop_toBottomOf="@id/locationText"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="8dp"
+                    android:paddingHorizontal="5dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/icon_star" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="4.0"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/black" />
+                </LinearLayout>
+
+                <!-- Time -->
+                <LinearLayout
+                    android:id="@+id/timeContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/locationText"
+                    android:background="@drawable/gray_border"
+                    app:layout_constraintStart_toEndOf="@id/ratingContainer"
+                    app:layout_constraintTop_toBottomOf="@id/locationText"
+                    android:layout_marginStart="8dp"
+                    android:paddingHorizontal="5dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/icon_time" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="9am - 9pm"
+                        android:textSize="14sp"
+                        android:textColor="@android:color/black" />
+                </LinearLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/vehicle_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/details"
+            app:cardCornerRadius="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="20dp"
+            app:cardElevation="4dp"
+
+            android:background="@color/light_gray">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                app:layout_constraintTop_toBottomOf="@id/top_details_container"
+                android:gravity="center">
+
+                <!-- Vehicle Section -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/icon_jeeto" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Vehicle"
+                        android:textSize="14sp"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/gray" />
+
+                <!-- CCS - 30kW Section -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/icon_ccs"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="CCS - 30kW"
+                        android:textSize="14sp"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/gray" />
+
+                <!-- Price Section -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="₹12.50"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/blue" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Per kwh"
+                        android:textSize="14sp"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+
+            app:layout_constraintTop_toBottomOf="@id/vehicle_card"
+            android:layout_marginHorizontal="20dp">
+            <!-- Contact Button -->
+
+            <LinearLayout
+                android:id="@+id/contactLinear"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/navigateLinear"
+                android:background="@drawable/button_border"
+                android:layout_marginStart="8dp"
+                android:paddingVertical="6dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:tint="@color/blue"
+                    android:src="@drawable/icon_directions" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="Contact"
+                    android:textSize="14sp"
+                    android:layout_marginEnd="20dp"
+                    android:textColor="@color/blue" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/navigateLinear"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/contactLinear"
+                android:background="@drawable/blue_button_border"
+                android:layout_marginStart="8dp"
+                android:paddingVertical="6dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/icon_directions" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="Contact"
+                    android:textSize="14sp"
+                    android:layout_marginEnd="20dp"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+          <!--  <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/contactButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/button_border"
+                android:text="Contact"
+                android:drawableTint="@color/blue"
+                android:drawablePadding="5dp"
+                android:drawableStart="@drawable/icon_directions"
+                android:textColor="#1C4792"
+                app:layout_constraintEnd_toStartOf="@id/navigateButton"
+                app:layout_constraintStart_toStartOf="parent" />-->
+
+            <!-- Navigate Button -->
+           <!-- <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/navigateButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ratingContainer"
+                android:layout_marginBottom="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_toEndOf="@id/contactButton"
+                android:background="@drawable/blue_button_border"
+                android:text="Navigate"
+                android:drawablePadding="5dp"
+                android:drawableStart="@drawable/icon_directions"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toEndOf="@id/contactButton" />-->
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.cardview.widget.CardView>
+
