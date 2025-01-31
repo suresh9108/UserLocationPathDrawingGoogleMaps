@@ -389,8 +389,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
             MarkerOptions()
                 .position(userLatLng)
                 .title("You are here")
-                .icon(BitmapDescriptorFactory.fromBitmap(createCustomMarker()))
-        )
+                .icon(createCustomMarkers(this,R.drawable.tracking)))
+
 
         currentLocationMarker?.showInfoWindow()
 
@@ -400,7 +400,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
 
 
     private fun createCustomMarker(): Bitmap {
-        val drawable = getDrawable(R.drawable.gps_navigation1) ?: return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+        val drawable = getDrawable(R.drawable.tracking) ?: return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
         val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         drawable.setBounds(0, 0, canvas.width, canvas.height)
