@@ -28,6 +28,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"/>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/gpsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_gps_fixed"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toTopOf="@id/recyclerView"
+    app:layout_anchorGravity="bottom|end"
+    app:layout_anchor="@id/mapFragment" />
+
 
     <RelativeLayout
         android:id="@+id/search_rl"

@@ -57,6 +57,10 @@ dependencies {
     // Google Maps for drawing the route
     implementation(libs.google.maps.services)
 
+    //Retrofit
+    implementation(libs.android.retrofit)
+    implementation(libs.android.converter.gson)
+
     // Permission handling
     implementation(libs.dexter)
 

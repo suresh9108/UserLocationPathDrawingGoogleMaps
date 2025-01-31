@@ -135,6 +135,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
         }
     }
 
+
+    override fun onResume() {
+        super.onResume()
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mapsViewModel.fetchUserLocation()
+        }
+    }
+
     override fun onSnapPositionChange(position: Int) {
         updateMapMarker(position)
     }
@@ -147,27 +155,65 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
     }
 
     private fun onclicks() {
-        binding.toggleSwitch.setOnClickListener {
-            if (isMapVisible) {
-                findViewById<FragmentContainerView>(R.id.mapFragment).visibility = View.GONE
-                findViewById<FrameLayout>(R.id.listFragmentContainer).visibility = View.VISIBLE
-                binding.toggleSwitch.setImageResource(R.drawable.icon_map)
 
 
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.listFragmentContainer, ListFragment())
-                    .commit()
 
-                isMapVisible = false
+
+        binding.gpsButton.setOnClickListener {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                // Check if location services are enabled
+                val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                val isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+
+                if (isGpsEnabled || isNetworkEnabled) {
+                    // Fetch the user's location
+                    mapsViewModel.fetchUserLocation()
+                    Toast.makeText(this, "Fetching your location...", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Please enable GPS or network location!", Toast.LENGTH_LONG).show()
+                    startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                }
             } else {
-                findViewById<FragmentContainerView>(R.id.mapFragment).visibility = View.VISIBLE
-                findViewById<FrameLayout>(R.id.listFragmentContainer).visibility = View.GONE
-                binding.toggleSwitch.setImageResource(R.drawable.icon_charging_hubs)
-
-                isMapVisible = true
+                Toast.makeText(this, "Location permission not granted!", Toast.LENGTH_SHORT).show()
+                checkAndRequestLocationPermission() // Request permissions again if not granted
             }
         }
+
+
+        binding.toggleSwitch.setOnClickListener {
+          toggleBehaviour()
+        }
+
+        binding.searchIv.setOnClickListener {
+            toggleBehaviour()
+        }
     }
+
+    private fun toggleBehaviour() {
+        if (isMapVisible) {
+            findViewById<FragmentContainerView>(R.id.mapFragment).visibility = View.GONE
+            findViewById<FrameLayout>(R.id.listFragmentContainer).visibility = View.VISIBLE
+            binding.toggleSwitch.setImageResource(R.drawable.icon_map)
+            binding.searchIv.setImageResource(R.drawable.icon_arrow_left)
+            binding.gpsButton.visibility=View.GONE
+
+
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.listFragmentContainer, ListFragment())
+                .commit()
+
+            isMapVisible = false
+        } else {
+            findViewById<FragmentContainerView>(R.id.mapFragment).visibility = View.VISIBLE
+            findViewById<FrameLayout>(R.id.listFragmentContainer).visibility = View.GONE
+            binding.toggleSwitch.setImageResource(R.drawable.icon_charging_hubs)
+            binding.searchIv.setImageResource(R.drawable.icon_search)
+            binding.gpsButton.visibility=View.VISIBLE
+            isMapVisible = true
+        }
+    }
+
 
     private val locationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -178,18 +224,22 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
         if (fineLocationGranted || coarseLocationGranted) {
             Toast.makeText(this, "Location Permission Granted", Toast.LENGTH_SHORT).show()
             checkLocationServices()
+            fetchAndObserveLocation() // Fetch location after permissions are granted
         } else {
             Toast.makeText(this, "Location permission is required!", Toast.LENGTH_SHORT).show()
         }
     }
 
+
     private fun checkAndRequestLocationPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
             ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-            mapsViewModel.fetchUserLocation()
+            // Permissions already granted
+            fetchAndObserveLocation()
             checkLocationServices()
         } else {
+            // Request permissions
             locationPermissionLauncher.launch(
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
@@ -198,6 +248,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
             )
         }
     }
+
+    private fun fetchAndObserveLocation() {
+        mapsViewModel.fetchUserLocation() // Start fetching the user's location
+        observeLocation() // Observe location updates
+    }
+
 
     private fun checkLocationServices() {
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -224,6 +280,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
         mMap = googleMap
         mMap.uiSettings.isZoomControlsEnabled = true
 
+        if (ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            mMap.isMyLocationEnabled = true
+        }
+
+        observeLocation() // Observe location updates and update the map
         val routeCoordinates = getRouteCoordinates()
 
         if (routeCoordinates.isNotEmpty()) {
@@ -233,6 +297,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
             Log.e("TAG", "No route data found!")
         }
     }
+
 
 
 
@@ -312,7 +377,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
         val userLatLng = LatLng(location.latitude, location.longitude)
         val customMarker = BitmapDescriptorFactory.fromBitmap(createCustomMarker())
         mMap.addMarker(MarkerOptions().position(userLatLng).title("You are here").icon(customMarker))
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 7f))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 9f))
     }
 
     private fun createCustomMarker(): Bitmap {
@@ -396,4 +461,5 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
 
         return routeList
     }
+
 }

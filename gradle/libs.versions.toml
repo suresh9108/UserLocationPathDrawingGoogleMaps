@@ -9,6 +9,7 @@ appcompat = "1.7.0"
 material = "1.12.0"
 activity = "1.10.0"
 constraintlayout = "2.2.0"
+retrofit = "2.9.0"
 
 playServicesLocation = "21.3.0"
 playServicesMaps = "19.0.0"
@@ -34,6 +35,8 @@ androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-view
 dexter = { module = "com.karumi:dexter", version.ref = "dexter" }
 google-maps-services = { module = "com.google.maps:google-maps-services", version.ref = "googleMapsServices" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
+android-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+android-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 
 
 
