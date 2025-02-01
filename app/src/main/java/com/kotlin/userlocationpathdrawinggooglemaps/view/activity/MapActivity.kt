@@ -58,7 +58,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
     private lateinit var snapHelper: LinearSnapHelper
     private var currentLocationMarker: Marker? = null
     private var selectedMarker: Marker? = null
-    private var previousIcon: BitmapDescriptor? = null
     private val markersList = mutableListOf<Marker>()
 
 
@@ -74,7 +73,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
         checkAndRequestLocationPermission()
         observeLocation()
         onclicks()
-
 
 
         binding.recyclerView.visibility = View.GONE
@@ -198,8 +196,19 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
     override fun onResume() {
         super.onResume()
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            checkLocationServices() // Ensure location services are enabled
-            mapsViewModel.fetchUserLocation() // Explicitly fetch location again
+            val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+            val isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+
+            if (isGpsEnabled || isNetworkEnabled) {
+                mapsViewModel.fetchUserLocation()
+                Toast.makeText(this, "Fetching your location...", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Please enable GPS or network location!", Toast.LENGTH_LONG).show()
+                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            }
+        } else {
+            checkAndRequestLocationPermission()
         }
     }
 
