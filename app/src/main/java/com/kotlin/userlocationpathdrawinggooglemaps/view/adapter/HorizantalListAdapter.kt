@@ -7,8 +7,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.model.LatLng
 import com.kotlin.userlocationpathdrawinggooglemaps.R
+import com.kotlin.userlocationpathdrawinggooglemaps.data.model.RoutePoint
 
-class HorizantalListAdapter(private val dataList: List<LatLng>) : RecyclerView.Adapter<HorizantalListAdapter.ViewHolder>() {
+class HorizantalListAdapter(private val dataList: List<RoutePoint>) : RecyclerView.Adapter<HorizantalListAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textView: TextView = itemView.findViewById(R.id.locationText)
@@ -27,7 +28,7 @@ class HorizantalListAdapter(private val dataList: List<LatLng>) : RecyclerView.A
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.textView.text = dataList[position].latitude.toString()
+        holder.textView.text = dataList[position].latLng.latitude.toString()
     }
 
     override fun getItemCount(): Int {
