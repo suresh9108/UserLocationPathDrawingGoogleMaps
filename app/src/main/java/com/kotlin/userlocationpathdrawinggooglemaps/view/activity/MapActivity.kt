@@ -17,6 +17,7 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentContainerView
@@ -296,8 +297,22 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
             checkLocationServices()
             fetchAndObserveLocation() // Fetch location after permissions are granted
         } else {
+            showPermissionDeniedDialog()
             Toast.makeText(this, "Location permission is required!", Toast.LENGTH_SHORT).show()
         }
+    }
+    private fun showPermissionDeniedDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage(getString(R.string.permission_denied_message))
+            .setCancelable(false)
+            .setPositiveButton(getString(R.string.go_to_settings)) { _, _ ->
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                intent.data = android.net.Uri.parse("package:$packageName")
+                startActivity(intent)
+            }
+            .setNegativeButton(getString(R.string.cancel)) { dialog, _ -> dialog.dismiss() }
+        val alert = builder.create()
+        alert.show()
     }
 
 
@@ -345,8 +360,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
             location?.let {
                 updateMapWithLocation(it)
             } ?: run {
-                Toast.makeText(this, "Retrying location fetch...", Toast.LENGTH_SHORT).show()
-                mapsViewModel.fetchUserLocation()
+                //Toast.makeText(this, "Retrying location fetch...", Toast.LENGTH_SHORT).show()
+               // mapsViewModel.fetchUserLocation()
 
             }
         })

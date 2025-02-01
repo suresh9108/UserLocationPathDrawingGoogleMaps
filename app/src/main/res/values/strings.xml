@@ -5,4 +5,7 @@
     <string name="fast">Fast</string>
     <string name="location_not_found">Location Not found</string>
     <string name="location_format">Your Lat: %1$s, Lng: %2$s</string>
+    <string name="permission_denied_message">Location permission is required to fetch your current location. Please enable it in settings.</string>
+    <string name="go_to_settings">Go to Settings</string>
+    <string name="cancel">Cancel</string>
 </resources>
