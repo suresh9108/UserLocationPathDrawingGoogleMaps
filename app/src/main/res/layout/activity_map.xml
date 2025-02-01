@@ -33,13 +33,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/icon_gps_fixed"
+        app:fabSize="normal"
+        android:backgroundTint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="15dp"
-        android:layout_marginBottom="30dp"
-        android:backgroundTint="@color/white"
+        android:layout_marginBottom="50dp"
         app:layout_constraintBottom_toTopOf="@id/recyclerView"
-    app:layout_anchorGravity="bottom|end"
-    app:layout_anchor="@id/mapFragment" />
+        app:layout_anchorGravity="bottom|end"
+        app:layout_anchor="@id/mapFragment" />
+
 
 
     <RelativeLayout

@@ -54,6 +54,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
     private var isMapVisible: Boolean = true
     private lateinit var snapHelper: LinearSnapHelper
     private var currentLocationMarker: Marker? = null
+    private var selectedMarker: Marker? = null
+    private var previousIcon: BitmapDescriptor? = null
+    private val markersList = mutableListOf<Marker>()
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,25 +122,72 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
             mMap = map
 
             mMap.setOnMarkerClickListener { marker ->
-
                 val index = marker.title?.toIntOrNull()
+                Log.e("TAG", "onCreate: Clicked marker index -> $index")
 
-                Log.e("TAG", "onCreate: $index", )
-                index?.let {
-                   // updateMapMarker(index)
-                    // Toggle the RecyclerView visibility
-                    if (binding.recyclerView.visibility == View.GONE ) {
-                        binding.recyclerView.visibility = View.VISIBLE
-                        binding.recyclerView.smoothScrollToPosition(it)
-                    } else {
+                if (index != null) {
+                    if (selectedMarker == marker) {
+                        // If the same marker is clicked again, hide the list and reset selection
                         binding.recyclerView.visibility = View.GONE
+                        restorePreviousMarker()
+                        selectedMarker = null
+                    } else {
+                        // Restore the previous marker before updating the new one
+                        restorePreviousMarker()
+
+                        // Set new enlarged icon
+                        selectedMarker = marker
+                        selectedMarker?.setIcon(createScaledMarker(this, marker, 1.1f)) // Increase size
+
+                        // Show the list and scroll to the selected position
+                        binding.recyclerView.visibility = View.VISIBLE
+                        binding.recyclerView.post {
+                            binding.recyclerView.smoothScrollToPosition(index)
+                        }
                     }
-                    return@setOnMarkerClickListener true
                 }
-                false
+                true
             }
         }
+
+
+
     }
+    private fun createScaledMarker(context: Context, marker: Marker, scaleFactor: Float): BitmapDescriptor {
+        val drawableId = when (marker.title?.toIntOrNull()) {
+            0 -> R.drawable.marker_bolt
+            1 -> R.drawable.marker_kazam
+            2 -> R.drawable.marker_statiq
+            3 -> R.drawable.marker_jio_bp
+            4 -> R.drawable.marker_bolt
+            5 -> R.drawable.marker_statiq
+            6 -> R.drawable.marker_bolt
+            7 -> R.drawable.marker_kazam
+            else -> R.drawable.marker_kazam
+
+        }
+
+        val drawable = context.getDrawable(drawableId) ?: return BitmapDescriptorFactory.defaultMarker()
+
+        val width = (drawable.intrinsicWidth * scaleFactor).toInt()
+        val height = (drawable.intrinsicHeight * scaleFactor).toInt()
+
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+
+
+    private fun restorePreviousMarker() {
+        selectedMarker?.let {
+            it.setIcon(createScaledMarker(this, it, 0.7f)) // Restore to original size
+        }
+    }
+
+
 
 
     override fun onResume() {
@@ -148,6 +199,16 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
 
     override fun onSnapPositionChange(position: Int) {
         updateMapMarker(position)
+        // Restore previous marker icon
+        restorePreviousMarker()
+
+        // Highlight new marker
+        if (position in markersList.indices) {
+            selectedMarker = markersList[position]
+            selectedMarker?.setIcon(createScaledMarker(this, selectedMarker!!, 1.1f)) // Increase size
+        }
+
+
     }
 
     private fun updateMapMarker(position: Int) {
@@ -325,19 +386,23 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
                 "waypoint_marker3" -> R.drawable.marker_jio_bp
                 "waypoint_marker4" -> R.drawable.marker_bolt
                 "waypoint_marker5" -> R.drawable.marker_statiq
+                "waypoint_marker6" -> R.drawable.marker_kazam
                 else -> R.drawable.car_navigation
             }
 
             val markerIcon = createCustomMarkers(this, iconResId)
 
 
-            mMap.addMarker(
+            val marker = mMap.addMarker(
                 MarkerOptions()
                     .position(LatLng(lat, lng))
                     .title("$i")
-                    .icon(markerIcon))
+                    .icon(markerIcon)
+            )
+            marker?.let { markersList.add(it) }
 
         }
+
     }
 
     private fun createCustomMarkers(context: Context, drawableId: Int): BitmapDescriptor {
