@@ -130,19 +130,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
 
                 if (index != null) {
                     if (selectedMarker == marker) {
-                        // If the same marker is clicked again, hide the list and reset selection
                         binding.recyclerView.visibility = View.GONE
                         restorePreviousMarker()
                         selectedMarker = null
                     } else {
-                        // Restore the previous marker before updating the new one
                         restorePreviousMarker()
-
-                        // Set new enlarged icon
                         selectedMarker = marker
-                        selectedMarker?.setIcon(createScaledMarker(this, marker, 1.1f)) // Increase size
-
-                        // Show the list and scroll to the selected position
+                        selectedMarker?.setIcon(createScaledMarker(this, marker, 1.1f))
                         binding.recyclerView.visibility = View.VISIBLE
                         binding.recyclerView.post {
                             binding.recyclerView.smoothScrollToPosition(index)
@@ -186,7 +180,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
 
     private fun restorePreviousMarker() {
         selectedMarker?.let {
-            it.setIcon(createScaledMarker(this, it, 0.7f)) // Restore to original size
+            it.setIcon(createScaledMarker(this, it, 0.7f))
         }
     }
 
@@ -215,10 +209,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
 
     override fun onSnapPositionChange(position: Int) {
         updateMapMarker(position)
-        // Restore previous marker icon
         restorePreviousMarker()
-
-        // Highlight new marker
         if (position in markersList.indices) {
             selectedMarker = markersList[position]
             selectedMarker?.setIcon(createScaledMarker(this, selectedMarker!!, 1.1f)) // Increase size
@@ -241,13 +232,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
 
         binding.gpsButton.setOnClickListener {
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                // Check if location services are enabled
                 val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
                 val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 val isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 
                 if (isGpsEnabled || isNetworkEnabled) {
-                    // Fetch the user's location
                     mapsViewModel.fetchUserLocation()
                     Toast.makeText(this, "Fetching your location...", Toast.LENGTH_SHORT).show()
                 } else {
@@ -256,7 +245,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
                 }
             } else {
                 //Toast.makeText(this, "Location permission not granted!", Toast.LENGTH_SHORT).show()
-                checkAndRequestLocationPermission() // Request permissions again if not granted
+                checkAndRequestLocationPermission()
             }
         }
 
@@ -298,13 +287,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
     private val locationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
+
         val fineLocationGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
         val coarseLocationGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
 
         if (fineLocationGranted || coarseLocationGranted) {
             Toast.makeText(this, "Location Permission Granted", Toast.LENGTH_SHORT).show()
             checkLocationServices()
-            fetchAndObserveLocation() // Fetch location after permissions are granted
+            fetchAndObserveLocation()
         } else {
             showPermissionDeniedDialog()
             Toast.makeText(this, "Location permission is required!", Toast.LENGTH_SHORT).show()
@@ -329,11 +319,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
             ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-            // Permissions already granted
             fetchAndObserveLocation()
             checkLocationServices()
         } else {
-            // Request permissions
             locationPermissionLauncher.launch(
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
@@ -344,8 +332,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
     }
 
     private fun fetchAndObserveLocation() {
-        mapsViewModel.fetchUserLocation() // Start fetching the user's location
-        observeLocation() // Observe location updates
+        mapsViewModel.fetchUserLocation()
+        observeLocation()
     }
 
 
@@ -358,7 +346,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
             Toast.makeText(this, "Please enable location services!", Toast.LENGTH_LONG).show()
             startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
         } else {
-            // GPS is now enabled, fetch location again
             mapsViewModel.fetchUserLocation()
         }
     }
@@ -388,7 +375,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
         mMap.uiSettings.isZoomControlsEnabled = false
 
 
-        observeLocation() // Observe location updates and update the map
+        observeLocation()
         val routeCoordinates = getRouteCoordinates()
 
         if (routeCoordinates.isNotEmpty()) {
@@ -398,8 +385,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
             Log.e("TAG", "No route data found!")
         }
     }
-
-
 
 
     private fun addMarkers() {
@@ -460,31 +445,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
 
 
 
-    private fun createCustomMarker(context: Context, drawableId: Int): BitmapDescriptor {
-        val drawable = context.getDrawable(drawableId) ?: return BitmapDescriptorFactory.defaultMarker()
-
-        val bitmap = Bitmap.createBitmap(
-            drawable.intrinsicWidth,
-            drawable.intrinsicHeight,
-            Bitmap.Config.ARGB_8888
-        )
-
-        val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
-
-        return BitmapDescriptorFactory.fromBitmap(bitmap)
-    }
-
-
-
     private fun updateMapWithLocation(location: Location) {
         val userLatLng = LatLng(location.latitude, location.longitude)
 
-        // Remove the previous marker, if any
         currentLocationMarker?.remove()
-
-        // Add the new marker
         currentLocationMarker = mMap.addMarker(
             MarkerOptions()
                 .position(userLatLng)
@@ -493,20 +457,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
 
 
         currentLocationMarker?.showInfoWindow()
-
-        // Animate the camera to the user's location
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 9f))
     }
 
-
-    private fun createCustomMarker(): Bitmap {
-        val drawable = getDrawable(R.drawable.tracking) ?: return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
-        val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
-        return bitmap
-    }
 
     private fun drawPathOnMap(route: List<LatLng>) {
         val polylineOptions = PolylineOptions()

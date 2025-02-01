@@ -11,7 +11,7 @@ import com.kotlin.userlocationpathdrawinggooglemaps.R
 class HorizantalListAdapter(private val dataList: List<LatLng>) : RecyclerView.Adapter<HorizantalListAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textView: TextView = itemView.findViewById(R.id.locationText) // Replace with your actual view id
+        val textView: TextView = itemView.findViewById(R.id.locationText)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
