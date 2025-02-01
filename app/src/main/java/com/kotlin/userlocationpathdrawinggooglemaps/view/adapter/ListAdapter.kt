@@ -1,4 +1,4 @@
-package com.kotlin.userlocationpathdrawinggooglemaps.ui
+package com.kotlin.userlocationpathdrawinggooglemaps.view.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.kotlin.userlocationpathdrawinggooglemaps.R
-import com.kotlin.userlocationpathdrawinggooglemaps.model.DataSet
+import com.kotlin.userlocationpathdrawinggooglemaps.data.model.DataSet
 
 class ListAdapter(private val dataList: List<DataSet>) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
 

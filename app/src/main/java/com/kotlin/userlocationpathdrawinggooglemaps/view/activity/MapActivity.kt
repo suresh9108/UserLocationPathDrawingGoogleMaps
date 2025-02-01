@@ -1,4 +1,4 @@
-package com.kotlin.userlocationpathdrawinggooglemaps.ui
+package com.kotlin.userlocationpathdrawinggooglemaps.view.activity
 
 import android.Manifest
 import android.content.Context
@@ -40,7 +40,9 @@ import com.kotlin.userlocationpathdrawinggooglemaps.R
 import com.kotlin.userlocationpathdrawinggooglemaps.utils.SingleItemScrollBehavior
 import com.kotlin.userlocationpathdrawinggooglemaps.utils.SnapOnScrollListener
 import com.kotlin.userlocationpathdrawinggooglemaps.databinding.ActivityMapBinding
-import com.kotlin.userlocationpathdrawinggooglemaps.model.SampleData
+import com.kotlin.userlocationpathdrawinggooglemaps.data.model.SampleData
+import com.kotlin.userlocationpathdrawinggooglemaps.view.adapter.HorizantalListAdapter
+import com.kotlin.userlocationpathdrawinggooglemaps.view.fragment.ListFragment
 import org.json.JSONObject
 import kotlin.math.max
 import kotlin.math.min
@@ -71,6 +73,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
         checkAndRequestLocationPermission()
         observeLocation()
         onclicks()
+
+
 
         binding.recyclerView.visibility = View.GONE
 
@@ -193,9 +197,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
     override fun onResume() {
         super.onResume()
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mapsViewModel.fetchUserLocation()
+            checkLocationServices() // Ensure location services are enabled
+            mapsViewModel.fetchUserLocation() // Explicitly fetch location again
         }
     }
+
 
     override fun onSnapPositionChange(position: Int) {
         updateMapMarker(position)
@@ -327,22 +333,27 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, OnSnapPositionChang
         if (!isGpsEnabled && !isNetworkEnabled) {
             Toast.makeText(this, "Please enable location services!", Toast.LENGTH_LONG).show()
             startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+        } else {
+            // GPS is now enabled, fetch location again
+            mapsViewModel.fetchUserLocation()
         }
     }
+
 
     private fun observeLocation() {
         mapsViewModel.locationLiveData.observe(this, Observer { location ->
             location?.let {
                 updateMapWithLocation(it)
             } ?: run {
-                Toast.makeText(this, "Failed to get location", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Retrying location fetch...", Toast.LENGTH_SHORT).show()
+                mapsViewModel.fetchUserLocation()
+
             }
         })
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        mMap.uiSettings.isZoomControlsEnabled = true
 
         if (ActivityCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_FINE_LOCATION

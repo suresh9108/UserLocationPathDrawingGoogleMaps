@@ -1,4 +1,4 @@
-package com.kotlin.userlocationpathdrawinggooglemaps.ui
+package com.kotlin.userlocationpathdrawinggooglemaps.view.adapter
 
 import android.view.LayoutInflater
 import android.view.View

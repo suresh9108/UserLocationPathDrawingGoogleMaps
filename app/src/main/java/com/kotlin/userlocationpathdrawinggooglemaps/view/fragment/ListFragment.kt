@@ -1,4 +1,4 @@
-package com.kotlin.userlocationpathdrawinggooglemaps.ui
+package com.kotlin.userlocationpathdrawinggooglemaps.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kotlin.userlocationpathdrawinggooglemaps.R
 import com.kotlin.userlocationpathdrawinggooglemaps.databinding.FragmentListBinding
-import com.kotlin.userlocationpathdrawinggooglemaps.model.DataSet
+import com.kotlin.userlocationpathdrawinggooglemaps.data.model.DataSet
+import com.kotlin.userlocationpathdrawinggooglemaps.view.adapter.ListAdapter
 
 class ListFragment : Fragment() {
 
@@ -27,18 +28,26 @@ class ListFragment : Fragment() {
         val data= mutableListOf<DataSet>()
         data.add(DataSet("MAHINDRA CHARGER","Jayanagar, bangaluru", R.drawable.charging1))
         data.add(DataSet("GBT EV Charging Plug","JP Nagar, Bengaluru", R.drawable.charging1))
-        data.add(DataSet("Okaya Charging Station","C Block, Sector 2, Shivajinagar",
+        data.add(
+            DataSet("Okaya Charging Station","C Block, Sector 2, Shivajinagar",
             R.drawable.charging1
-        ))
-        data.add(DataSet("Charzer Charging Station","Jayanagara 9th Block, Bengaluru",
+        )
+        )
+        data.add(
+            DataSet("Charzer Charging Station","Jayanagara 9th Block, Bengaluru",
             R.drawable.charging1
-        ))
-        data.add(DataSet("Okaya Charging Station","C Block, Sector 2, Shivajinagar",
+        )
+        )
+        data.add(
+            DataSet("Okaya Charging Station","C Block, Sector 2, Shivajinagar",
             R.drawable.charging1
-        ))
-        data.add(DataSet("Charzer Charging Station","Jayanagara 9th Block, Bengaluru",
+        )
+        )
+        data.add(
+            DataSet("Charzer Charging Station","Jayanagara 9th Block, Bengaluru",
             R.drawable.charging1
-        ))
+        )
+        )
 
         adapter = ListAdapter(data)
         recyclerView.adapter = adapter

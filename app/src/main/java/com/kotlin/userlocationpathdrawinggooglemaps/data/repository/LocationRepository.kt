@@ -1,4 +1,4 @@
-package com.kotlin.userlocationpathdrawinggooglemaps.repository
+package com.kotlin.userlocationpathdrawinggooglemaps.data.repository
 
 import android.annotation.SuppressLint
 import android.content.Context

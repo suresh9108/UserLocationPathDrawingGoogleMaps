@@ -1,4 +1,4 @@
-package com.kotlin.userlocationpathdrawinggooglemaps.model
+package com.kotlin.userlocationpathdrawinggooglemaps.data.model
 
 class SampleData {
     companion object {

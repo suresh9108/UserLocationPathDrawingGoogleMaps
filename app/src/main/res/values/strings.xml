@@ -3,4 +3,6 @@
     <string name="google_maps_api_key">AIzaSyCziqe1Q-d4HMC3D9ZyYDFkBtx8ZHrzGzM</string>
     <string name="find_charging_hub">Find charging hub</string>
     <string name="fast">Fast</string>
+    <string name="location_not_found">Location Not found</string>
+    <string name="location_format">Your Lat: %1$s, Lng: %2$s</string>
 </resources>

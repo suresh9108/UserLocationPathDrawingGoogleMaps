@@ -4,7 +4,13 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import android.location.Location
-import com.kotlin.userlocationpathdrawinggooglemaps.repository.LocationRepository
+import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
+import com.kotlin.userlocationpathdrawinggooglemaps.R
+import com.kotlin.userlocationpathdrawinggooglemaps.data.repository.LocationRepository
 
 class MapsViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -15,5 +21,7 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
     fun fetchUserLocation() {
         locationRepository.fetchUserLocation()
     }
+
+
 
 }
